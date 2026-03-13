@@ -1,167 +1,132 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-<title>Lost Forest Quest</title>
-
-<style>
-
-/* Remove default margins and hide scrollbars */
-body{
-margin:0;
-font-family:monospace; /* Pixel-style text */
-overflow:hidden;
-background:black;
+    <head>
+        <title>Lost Forest Quest</title>
+        <!-- Made by: Elias Belialba -->
+    <style>
+    /* Removing default margins and hide scrollbars */
+    body {
+        margin:0;
+        font-family:monospace; /* Pixel-style text */
+        overflow:hidden;
+        background:black;
 }
 
-/* Main game container */
-.game{
-width:100%;
-height:100vh; /* Full screen height */
-position:relative;
-overflow:hidden;
+    /* Main game container */
+    .game {
+        width:100%;
+        height:100vh; /* Full screen height */
+        position:relative;
+        overflow:hidden;
 }
 
-/* Scrolling background of the game world */
-.background{
-position:absolute;
-width:300%; /* Extra width so it can scroll */
-height:100%;
-
-/* Background image (pixel forest scene) */
-background-image:url("forestimage.jpg");
-
-background-repeat:repeat-x; /* Repeat horizontally */
-background-size:auto 107%; /* Fit height without zooming */
-
-
+    /* background of the game */
+    .background {
+        position:absolute;
+        width:300%; /* Extra width*/
+        height:100%;
+        background-image:url("forestimage.jpg"); /* (pixel forest image) */
+        background-size:auto 107%; /* adjusting it wide */
 }
 
-/* Keyframe animation for scrolling effect */
-@keyframes scrollBG{
-from{transform:translateX(0);}
-to{transform:translateX(-33.33%);}
+    /* Dialogue box at the bottom of the screen */
+    .dialogue {
+        position:absolute;
+        bottom:0;
+        width:100%;
+        background:rgba(0,0,0,0.85); /* a little bit transparent black background */
+        color:white;
+        padding:20px;
+        box-sizing:border-box;        
+        border-top:4px solid #4CAF50; /* Top border for game style */
 }
 
-/* Dialogue box at the bottom of the screen */
-.dialogue{
-position:absolute;
-bottom:0;
-width:100%;
-
-/* Semi-transparent black background */
-background:rgba(0,0,0,0.85);
-
-color:white;
-padding:20px;
-box-sizing:border-box;
-
-/* Top border for game style */
-border-top:4px solid #4CAF50;
+    /* Area where story text appears */
+    #text {
+        font-size:18px;
+        min-height:50px; /* Keeps box size consistent */
 }
 
-/* Area where story text appears */
-#text{
-font-size:18px;
-min-height:50px; /* Keeps box size consistent */
+    /* Container for player choice buttons */
+    .choices {
+        margin-top:10px;
 }
 
-/* Container for player choice buttons */
-.choices{
-margin-top:10px;
+    /* Style for buttons */
+    button {
+        padding:10px 15px;
+        margin:5px;
+        background:#4CAF50;
+        border:none;
+        color:white;
+        font-size:16px;
+        cursor:pointer;
 }
 
-/* Style for buttons */
-button{
-padding:10px 15px;
-margin:5px;
-
-background:#4CAF50;
-border:none;
-
-color:white;
-font-size:16px;
-
-cursor:pointer;
+    /* Button hover effect */
+    button:hover {
+        background:#75ce79;
+        transition: 0.8s; /* transition for the background */
 }
 
-/* Button hover effect */
-button:hover{
-background:#66bb6a;
+    /* Game title at top of screen */
+    .title {
+        position:absolute;
+        top:30px;
+        left:50%;
+        font-family:'EB Garamond';
+        font-weight: bolder;
+
+        /* Center the title horizontally */
+        transform:translateX(-50%);
+        color:white;
+        font-size:40px;
+        /* Shadow for better visibility */
+        text-shadow:2px 2px black;
 }
-
-/* Game title at top of screen */
-.title{
-position:absolute;
-top:30px;
-left:50%;
-font-family:'EB Garamond';
-font-weight: bolder;
-
-/* Center the title horizontally */
-transform:translateX(-50%);
-
-color:white;
-font-size:40px;
-
-/* Shadow for better visibility */
-text-shadow:2px 2px black;
-}
-
-</style>
-</head>
-
+        </style>
+    </head>
 <body>
+    
+    <div class="game"><!-- Main game container -->
 
-<!-- Main game container -->
-<div class="game">
+    <div class="background" id="bg"></div><!-- Background layer -->
+    
+    <div class="title">LOST FOREST QUEST</div><!-- Title of the game -->
 
-<!-- Background layer -->
-<div class="background" id="bg"></div>
+    <div class="dialogue"><!-- Dialogue UI -->
 
-<!-- Title of the game -->
-<div class="title">LOST FOREST QUEST</div>
+    <div id="text"></div><!-- Story text will appear here -->
+ 
+    <div class="choices" id="choices"></div><!-- Choice buttons will appear here -->
 
-<!-- Dialogue UI -->
-<div class="dialogue">
-
-<!-- Story text will appear here -->
-<div id="text"></div>
-
-<!-- Choice buttons will appear here -->
-<div class="choices" id="choices"></div>
-
-</div>
-
+    </div>
 </div>
 
 <script>
-
-/* 
-TYPEWRITER EFFECT
+/* TYPEWRITER EFFECT
 This function prints text letter by letter
 to make the dialogue look like RPG games
 */
 function typeText(text){
 
-let i=0 // counter for characters
-let speed=30 // typing speed
+    let i = 0 // counter for characters
+    let speed = 30 // typing speed
 
-let display=document.getElementById("text")
+    let display = document.getElementById("text")
 
-/* Clear previous text */
-display.innerHTML=""
+    /* Clear previous text */
+    display.innerHTML=""
 
-/* Function that types characters */
-function typing(){
+    /* Function that types characters */
+    function typing(){
 
-if(i<text.length){
+    if(i<text.length){
 
-display.innerHTML+=text.charAt(i)
-i++
+    display.innerHTML+=text.charAt(i)
+    i++
 
-setTimeout(typing,speed)
-
+    setTimeout(typing,speed)
 }
 
 }
@@ -173,10 +138,9 @@ typing()
 /* Function to change the background image */
 function changeBackground(image){
 
-let bg = document.getElementById("bg")
+    let bg = document.getElementById("bg")
 
-bg.style.backgroundImage = "url('" + image + "')"
-
+    bg.style.backgroundImage = "url('" + image + "')"
 }
 
 /*
@@ -185,100 +149,71 @@ Shows the first story and the first choices
 */
 function startGame(){
 
-changeBackground("forestimage.jpg")
+    changeBackground("forestimage.jpg")
 
-typeText("You wake up in a mysterious forest. You see a dark cave and hear water flowing nearby.")
+    typeText("You wake up in a mysterious forest. You see a dark cave and hear water flowing nearby.")
 
-/* Create buttons for player choices */
-document.getElementById("choices").innerHTML=`
-
-<button onclick="choose('cave')">Enter the Dark Cave</button>
-<button onclick="choose('river')">Follow the River</button>
-
-`
+    /* Create buttons for player choices */
+    document.getElementById("choices").innerHTML=`
+    <button onclick="choose('cave')">Enter the Dark Cave</button>
+    <button onclick="choose('river')">Follow the River</button>`
 
 }
 
 /*
 FIRST DECISION
-Player chooses between cave or river
-Switch statement controls the dialogue tree
-*/
+Player chooses between cave or river*/
+/* dito na papasok yung switch statement na nagcocontrol sa dialogue tree*/
 function choose(path){
 
-switch(path){
+    switch(path){
+    
+    case "cave":
+    changeBackground("sleeping dragon.jpg")
+    typeText("Inside the cave you find a sleeping dragon guarding a treasure.")
 
-case "cave":
+    /* Show cave choices */
+    document.getElementById("choices").innerHTML=`
+    <button onclick="caveChoice('sneak')">Sneak Past</button>
+    <button onclick="caveChoice('attack')">Attack Dragon</button>`
 
-changeBackground("sleeping dragon.jpg")
+    break
 
-typeText("Inside the cave you find a sleeping dragon guarding a treasure.")
+    case "river":
+    changeBackground("flowingriver.jpg")
+    typeText("You reach a fast flowing river deep inside the forest.")
 
-/* Show cave choices */
-document.getElementById("choices").innerHTML=`
+    /* Show river choices */   
+    document.getElementById("choices").innerHTML=`
+    <button onclick="riverChoice('raft')">Build a Raft</button>
+    <button onclick="riverChoice('swim')">Swim Across</button>`
 
-<button onclick="caveChoice('sneak')">Sneak Past</button>
-<button onclick="caveChoice('attack')">Attack Dragon</button>
-
-`
-
-break
-
-case "river":
-
-changeBackground("flowingriver.jpg")
-
-typeText("You reach a fast flowing river deep inside the forest.")
-
-/* Show river choices */
-document.getElementById("choices").innerHTML=`
-
-<button onclick="riverChoice('raft')">Build a Raft</button>
-<button onclick="riverChoice('swim')">Swim Across</button>
-
-`
-
-break
-
+    break
 }
 
 }
 
 /*
 CAVE STORY PATH
-Handles player actions inside the cave
+hinahandle yung action ng player sa loob ng cave
 */
 function caveChoice(choice){
 
-switch(choice){
-
-case "sneak":
-
-changeBackground("sneaking.jpg")
-
-typeText("You quietly sneak past the dragon and take the treasure. YOU WIN!")
-
-/* Restart button */
-document.getElementById("choices").innerHTML=`
-
-<button onclick="startGame()">Play Again</button>
-
-`
+    switch(choice){
+    
+    case "sneak":
+    changeBackground("sneaking.jpg")
+    typeText("You quietly sneak past the dragon and take the treasure. YOU WIN!")
+    /* Restart button */
+    document.getElementById("choices").innerHTML=`<button onclick="startGame()">Play Again</button>`
 
 break
 
-case "attack":
-
-changeBackground("attacked.jpg")
-
-typeText("The dragon wakes up and breathes fire! GAME OVER.")
-
-/* Restart button */
-document.getElementById("choices").innerHTML=`
-
-<button onclick="startGame()">Try Again</button>
-
-`
+    case "attack":
+    changeBackground("attacked.jpg")
+    typeText("The dragon wakes up and breathes fire! GAME OVER.")
+    /* Restart button */
+    document.getElementById("choices").innerHTML=`<button onclick="startGame()">Try Again</button>`
 
 break
 
@@ -288,37 +223,23 @@ break
 
 /*
 RIVER STORY PATH
-Handles player actions at the river
+hinahandle yung action ng player sa river
 */
 function riverChoice(choice){
 
-switch(choice){
+    switch(choice){
 
-case "raft":
-
-changeBackground("village.jpg")
-
-typeText("You build a raft and cross safely. A village welcomes you. YOU WIN!")
-
-document.getElementById("choices").innerHTML=`
-
-<button onclick="startGame()">Play Again</button>
-
-`
+    case "raft":
+    changeBackground("village.jpg")
+    typeText("You build a raft and cross safely. A village welcomes you. YOU WIN!")
+    document.getElementById("choices").innerHTML=`<button onclick="startGame()">Play Again</button>`
 
 break
 
-case "swim":
-
-changeBackground("swimmingacross.jpg")
-
-typeText("The river flow is too strong. You get swept away. GAME OVER.")
-
-document.getElementById("choices").innerHTML=`
-
-<button onclick="startGame()">Try Again</button>
-
-`
+    case "swim":
+    changeBackground("swimmingacross.jpg")
+    typeText("The river flow is too strong. You get swept away. GAME OVER.")
+    document.getElementById("choices").innerHTML=`<button onclick="startGame()">Try Again</button>`
 
 break
 
@@ -326,10 +247,8 @@ break
 
 }
 
-/* Automatically start the game when the page loads */
-startGame()
-
-</script>
-
-</body>
+    /* Automatic na mag-iistart ang game kapag ni-run or ni-reload ang game */
+    startGame()
+    </script>
+  </body>
 </html>

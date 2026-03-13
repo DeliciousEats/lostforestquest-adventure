@@ -3,323 +3,333 @@
 
 <head>
 <title>Lost Forest Quest</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
 <style>
-/* Mobile-first responsive design */
-* {
-  box-sizing: border-box;
+
+/* Remove default margins and hide scrollbars */
+body{
+margin:0;
+font-family:monospace; /* Pixel-style text */
+overflow:hidden;
+background:black;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Courier New', monospace;
-  overflow: hidden;
-  background: black;
-  height: 100vh;
-  width: 100vw;
-  touch-action: manipulation; /* Better mobile touch */
+/* Main game container */
+.game{
+width:100%;
+height:100vh; /* Full screen height */
+position:relative;
+overflow:hidden;
 }
 
-/* Main game container - full mobile screen */
-.game {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
+/* Scrolling background of the game world */
+.background{
+position:absolute;
+width:300%; /* Extra width so it can scroll */
+height:100%;
+
+/* Background image (pixel forest scene) */
+background-image:url("forestimage.jpg");
+
+background-repeat:repeat-x; /* Repeat horizontally */
+background-size:auto 107%; /* Fit height without zooming */
+
+
 }
 
-/* Responsive scrolling background */
-.background {
-  position: absolute;
-  width: 300%;
-  height: 100%;
-  background-image: url("forestimage.jpg");
-  background-repeat: repeat-x;
-  background-size: auto 110%; /* Slightly taller for mobile */
-  animation: scrollBG 60s linear infinite;
+/* Keyframe animation for scrolling effect */
+@keyframes scrollBG{
+from{transform:translateX(0);}
+to{transform:translateX(-33.33%);}
 }
 
-/* Smooth scrolling animation */
-@keyframes scrollBG {
-  from { transform: translateX(0); }
-  to { transform: translateX(-33.33%); }
+/* Dialogue box at the bottom of the screen */
+.dialogue{
+position:absolute;
+bottom:0;
+width:100%;
+
+/* Semi-transparent black background */
+background:rgba(0,0,0,0.85);
+
+color:white;
+padding:20px;
+box-sizing:border-box;
+
+/* Top border for game style */
+border-top:4px solid #4CAF50;
 }
 
-/* Responsive dialogue box - takes more screen on mobile */
-.dialogue {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 40vh; /* Takes 40% of screen height on mobile */
-  background: rgba(0, 0, 0, 0.92);
-  color: white;
-  padding: 4vw 5vw;
-  display: flex;
-  flex-direction: column;
-  border-top: 6px solid #4CAF50;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.8);
+/* Area where story text appears */
+#text{
+font-size:18px;
+min-height:50px; /* Keeps box size consistent */
 }
 
-/* Responsive story text */
-#text {
-  font-size: clamp(14px, 4vw, 18px);
-  line-height: 1.4;
-  flex: 1;
-  min-height: 8vh;
-  margin-bottom: 2vh;
-  word-wrap: break-word;
+/* Container for player choice buttons */
+.choices{
+margin-top:10px;
 }
 
-/* Responsive choices container */
-.choices {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5vh;
+/* Style for buttons */
+button{
+padding:10px 15px;
+margin:5px;
+
+background:#4CAF50;
+border:none;
+
+color:white;
+font-size:16px;
+
+cursor:pointer;
 }
 
-/* Mobile-optimized buttons */
-button {
-  padding: clamp(12px, 4vh, 18px) clamp(20px, 8vw, 30px);
-  margin: 0;
-  background: linear-gradient(145deg, #4CAF50, #45a049);
-  border: 3px solid #66BB6A;
-  border-radius: 12px;
-  color: white;
-  font-size: clamp(14px, 4.5vw, 18px);
-  font-family: inherit;
-  font-weight: bold;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
-  min-height: 12vh;
+/* Button hover effect */
+button:hover{
+background:#66bb6a;
 }
 
-/* Button hover/touch effects */
-button:hover, button:active {
-  background: linear-gradient(145deg, #66BB6A, #4CAF50);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+/* Game title at top of screen */
+.title{
+position:absolute;
+top:30px;
+left:50%;
+font-family:'EB Garamond';
+font-weight: bolder;
+
+/* Center the title horizontally */
+transform:translateX(-50%);
+
+color:white;
+font-size:40px;
+
+/* Shadow for better visibility */
+text-shadow:2px 2px black;
 }
 
-/* Responsive title */
-.title {
-  position: absolute;
-  top: clamp(20px, 8vh, 40px);
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Georgia', serif;
-  font-weight: bold;
-  font-size: clamp(24px, 8vw, 36px);
-  color: #FFF;
-  text-shadow: 3px 3px 8px #000, 0 0 20px rgba(255, 255, 255, 0.3);
-  z-index: 10;
-  text-align: center;
-  letter-spacing: 2px;
-}
-
-/* Landscape mode adjustments */
-@media (orientation: landscape) and (max-height: 500px) {
-  .dialogue {
-    height: 50vh;
-  }
-  
-  #text {
-    min-height: 6vh;
-  }
-  
-  button {
-    min-height: 10vh;
-    font-size: clamp(12px, 3.5vw, 16px);
-  }
-}
-
-/* Safe area support for iPhone notches */
-@supports(padding: max(0px)) {
-  body {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  .title {
-    top: max(20px, env(safe-area-inset-top));
-  }
-}
-
-/* Loading state */
-.loading {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #4CAF50;
-  font-size: clamp(16px, 5vw, 24px);
-  text-align: center;
-  z-index: 100;
-}
 </style>
 </head>
 
 <body>
-<!-- Loading indicator -->
-<div class="loading" id="loading">Loading Forest...</div>
 
 <!-- Main game container -->
 <div class="game">
-  <!-- Background layer -->
-  <div class="background" id="bg"></div>
-  
-  <!-- Title -->
-  <div class="title">LOST FOREST QUEST</div>
-  
-  <!-- Dialogue UI -->
-  <div class="dialogue">
-    <div id="text"></div>
-    <div class="choices" id="choices"></div>
-  </div>
+
+<!-- Background layer -->
+<div class="background" id="bg"></div>
+
+<!-- Title of the game -->
+<div class="title">LOST FOREST QUEST</div>
+
+<!-- Dialogue UI -->
+<div class="dialogue">
+
+<!-- Story text will appear here -->
+<div id="text"></div>
+
+<!-- Choice buttons will appear here -->
+<div class="choices" id="choices"></div>
+
+</div>
+
 </div>
 
 <script>
-/* Mobile-optimized typewriter effect */
-function typeText(text) {
-  const display = document.getElementById("text");
-  display.innerHTML = "";
-  
-  let i = 0;
-  const speed = window.innerWidth < 768 ? 40 : 30; // Slower on mobile
-  
-  function typing() {
-    if (i < text.length) {
-      display.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(typing, speed);
-    }
-  }
-  
-  typing();
+
+/* 
+TYPEWRITER EFFECT
+This function prints text letter by letter
+to make the dialogue look like RPG games
+*/
+function typeText(text){
+
+let i=0 // counter for characters
+let speed=30 // typing speed
+
+let display=document.getElementById("text")
+
+/* Clear previous text */
+display.innerHTML=""
+
+/* Function that types characters */
+function typing(){
+
+if(i<text.length){
+
+display.innerHTML+=text.charAt(i)
+i++
+
+setTimeout(typing,speed)
+
 }
 
-/* Optimized background changer */
-function changeBackground(image) {
-  const bg = document.getElementById("bg");
-  bg.style.backgroundImage = `url('${image}')`;
 }
 
-/* Start game with mobile optimizations */
-function startGame() {
-  const loading = document.getElementById("loading");
-  if (loading) loading.style.display = "none";
-  
-  changeBackground("forestimage.jpg");
-  typeText("You wake up in a mysterious forest. You see a dark cave and hear water flowing nearby.");
-  
-  document.getElementById("choices").innerHTML = `
-    <button onclick="choose('cave')">Enter the Dark Cave</button>
-    <button onclick="riverChoice('river')">Follow the River</button>
-  `;
+typing()
+
 }
 
-function choose(path) {
-  document.getElementById("choices").innerHTML = '<div style="color:#4CAF50;">Loading...</div>';
-  
-  setTimeout(() => {
-    switch(path) {
-      case "cave":
-        changeBackground("sleeping dragon.jpg");
-        typeText("Inside the cave you find a sleeping dragon guarding a treasure.");
-        document.getElementById("choices").innerHTML = `
-          <button onclick="caveChoice('sneak')">Sneak Past</button>
-          <button onclick="caveChoice('attack')">Attack Dragon</button>
-        `;
-        break;
-    }
-  }, 500);
+/* Function to change the background image */
+function changeBackground(image){
+
+let bg = document.getElementById("bg")
+
+bg.style.backgroundImage = "url('" + image + "')"
+
 }
 
-function caveChoice(choice) {
-  document.getElementById("choices").innerHTML = '<div style="color:#4CAF50;">Loading...</div>';
-  
-  setTimeout(() => {
-    switch(choice) {
-      case "sneak":
-        changeBackground("sneaking.jpg");
-        typeText("You quietly sneak past the dragon and take the treasure. 🏆 YOU WIN!");
-        document.getElementById("choices").innerHTML = `
-          <button onclick="startGame()">Play Again</button>
-        `;
-        break;
-      case "attack":
-        changeBackground("attacked.jpg");
-        typeText("The dragon wakes up and breathes fire! 🔥 GAME OVER.");
-        document.getElementById("choices").innerHTML = `
-          <button onclick="startGame()">Try Again</button>
-        `;
-        break;
-    }
-  }, 500);
+/*
+START GAME FUNCTION
+Shows the first story and the first choices
+*/
+function startGame(){
+
+changeBackground("forestimage.jpg")
+
+typeText("You wake up in a mysterious forest. You see a dark cave and hear water flowing nearby.")
+
+/* Create buttons for player choices */
+document.getElementById("choices").innerHTML=`
+
+<button onclick="choose('cave')">Enter the Dark Cave</button>
+<button onclick="choose('river')">Follow the River</button>
+
+`
+
 }
 
-function riverChoice(path) {
-  document.getElementById("choices").innerHTML = '<div style="color:#4CAF50;">Loading...</div>';
-  
-  setTimeout(() => {
-    switch(path) {
-      case "river":
-        changeBackground("flowingriver.jpg");
-        typeText("You reach a fast flowing river deep inside the forest.");
-        document.getElementById("choices").innerHTML = `
-          <button onclick="riverChoice('raft')">Build a Raft</button>
-          <button onclick="riverChoice('swim')">Swim Across</button>
-        `;
-        break;
-      case "raft":
-        changeBackground("village.jpg");
-        typeText("You build a raft and cross safely. A village welcomes you. 🏆 YOU WIN!");
-        document.getElementById("choices").innerHTML = `
-          <button onclick="startGame()">Play Again</button>
-        `;
-        break;
-      case "swim":
-        changeBackground("swimmingacross.jpg");
-        typeText("The river flow is too strong. You get swept away. 💀 GAME OVER.");
-        document.getElementById("choices").innerHTML = `
-          <button onclick="startGame()">Try Again</button>
-        `;
-        break;
-    }
-  }, 500);
+/*
+FIRST DECISION
+Player chooses between cave or river
+Switch statement controls the dialogue tree
+*/
+function choose(path){
+
+switch(path){
+
+case "cave":
+
+changeBackground("sleeping dragon.jpg")
+
+typeText("Inside the cave you find a sleeping dragon guarding a treasure.")
+
+/* Show cave choices */
+document.getElementById("choices").innerHTML=`
+
+<button onclick="caveChoice('sneak')">Sneak Past</button>
+<button onclick="caveChoice('attack')">Attack Dragon</button>
+
+`
+
+break
+
+case "river":
+
+changeBackground("flowingriver.jpg")
+
+typeText("You reach a fast flowing river deep inside the forest.")
+
+/* Show river choices */
+document.getElementById("choices").innerHTML=`
+
+<button onclick="riverChoice('raft')">Build a Raft</button>
+<button onclick="riverChoice('swim')">Swim Across</button>
+
+`
+
+break
+
 }
 
-/* Prevent zoom on double tap */
-document.addEventListener('touchstart', function(event) {
-  if (event.touches.length > 1) {
-    event.preventDefault();
-  }
-});
+}
 
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function(event) {
-  const now = (new Date()).getTime();
-  if (now - lastTouchEnd <= 300) {
-    event.preventDefault();
-  }
-  lastTouchEnd = now;
-}, false);
+/*
+CAVE STORY PATH
+Handles player actions inside the cave
+*/
+function caveChoice(choice){
 
-/* Start game when fully loaded */
-window.addEventListener('load', () => {
-  setTimeout(startGame, 1000);
-});
+switch(choice){
 
-/* Handle orientation change */
-window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
-    document.body.style.height = window.innerHeight + 'px';
-  }, 100);
-});
+case "sneak":
+
+changeBackground("sneaking.jpg")
+
+typeText("You quietly sneak past the dragon and take the treasure. YOU WIN!")
+
+/* Restart button */
+document.getElementById("choices").innerHTML=`
+
+<button onclick="startGame()">Play Again</button>
+
+`
+
+break
+
+case "attack":
+
+changeBackground("attacked.jpg")
+
+typeText("The dragon wakes up and breathes fire! GAME OVER.")
+
+/* Restart button */
+document.getElementById("choices").innerHTML=`
+
+<button onclick="startGame()">Try Again</button>
+
+`
+
+break
+
+}
+
+}
+
+/*
+RIVER STORY PATH
+Handles player actions at the river
+*/
+function riverChoice(choice){
+
+switch(choice){
+
+case "raft":
+
+changeBackground("village.jpg")
+
+typeText("You build a raft and cross safely. A village welcomes you. YOU WIN!")
+
+document.getElementById("choices").innerHTML=`
+
+<button onclick="startGame()">Play Again</button>
+
+`
+
+break
+
+case "swim":
+
+changeBackground("swimmingacross.jpg")
+
+typeText("The river flow is too strong. You get swept away. GAME OVER.")
+
+document.getElementById("choices").innerHTML=`
+
+<button onclick="startGame()">Try Again</button>
+
+`
+
+break
+
+}
+
+}
+
+/* Automatically start the game when the page loads */
+startGame()
+
 </script>
+
 </body>
 </html>
